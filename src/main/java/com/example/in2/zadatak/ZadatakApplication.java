@@ -10,12 +10,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import models.Tipoj;
-import repository.TipojDAO;
-import service.TipojService;
-
-@SpringBootApplication(scanBasePackages = { "service" })
-@EnableJpaRepositories("repository")
+@SpringBootApplication(scanBasePackages = { "service" , "converter", "repository"})
+@EnableJpaRepositories(basePackages = "repository")
 @EntityScan("models")
 public class ZadatakApplication {
 

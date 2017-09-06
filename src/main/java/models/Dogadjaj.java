@@ -2,12 +2,17 @@ package models;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
+import converters.LocalDateTimeAttributeConverter;
 
 @Entity
 public class Dogadjaj implements Serializable {
@@ -20,13 +25,15 @@ public class Dogadjaj implements Serializable {
 	@Column(name = "naziv") 
     private String naziv;
 	
-	@Column(name = "od")
-	private Timestamp odVrijeme;
+	@Column(name = "odvrijeme")
+	@Convert(converter = LocalDateTimeAttributeConverter.class)
+	private LocalDateTime odVrijeme;
 	
-	@Column(name = "do")
-	private Timestamp doVrijeme;
+	@Column(name = "dovrijeme")
+	@Convert(converter = LocalDateTimeAttributeConverter.class)
+	private LocalDateTime doVrijeme;
 
-	@Column(name = "slobodanUlaz")
+	@Column(name = "slobodanulaz")
 	private boolean slobodanUlaz;
 	
 	@ManyToOne
@@ -35,7 +42,7 @@ public class Dogadjaj implements Serializable {
 
 	public Dogadjaj() {}
 	
-	public Dogadjaj(String naziv, Timestamp odVrijeme, Timestamp doVrijeme, boolean slobodanUlaz, Grad grad) {
+	public Dogadjaj(String naziv, LocalDateTime odVrijeme, LocalDateTime doVrijeme, boolean slobodanUlaz, Grad grad) {
 		this.naziv = naziv;
 		this.odVrijeme = odVrijeme;
 		this.doVrijeme = doVrijeme;
@@ -59,19 +66,19 @@ public class Dogadjaj implements Serializable {
 		this.naziv = naziv;
 	}
 
-	public Timestamp getOdVrijeme() {
+	public LocalDateTime getOdVrijeme() {
 		return odVrijeme;
 	}
 
-	public void setOdVrijeme(Timestamp odVrijeme) {
+	public void setOdVrijeme(LocalDateTime odVrijeme) {
 		this.odVrijeme = odVrijeme;
 	}
 
-	public Timestamp getDoVrijeme() {
+	public LocalDateTime getDoVrijeme() {
 		return doVrijeme;
 	}
 
-	public void setDoVrijeme(Timestamp doVrijeme) {
+	public void setDoVrijeme(LocalDateTime doVrijeme) {
 		this.doVrijeme = doVrijeme;
 	}
 
