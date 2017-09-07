@@ -2,6 +2,7 @@ package com.example.in2.zadatak.repository;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -123,5 +124,30 @@ public class ZadatakGradRepositoryTest {
 		this.gradDAO.delete(savedGradA);
 		this.gradDAO.delete(savedGradB);
 		this.gradDAO.delete(savedGradC);
+	}
+	
+	@Test
+	public void testFilterGrad()
+	{
+		Organizacijskajedinica zupanija1 = this.organizacijskaJedinicaDAO.findOne(7);
+		Organizacijskajedinica zupanija2 = this.organizacijskaJedinicaDAO.findOne(8);
+		Organizacijskajedinica zupanija3 = this.organizacijskaJedinicaDAO.findOne(9);
+		Organizacijskajedinica zupanija4 = this.organizacijskaJedinicaDAO.findOne(10);
+		List<Organizacijskajedinica> zupanije = new ArrayList<Organizacijskajedinica>();
+		zupanije.add(zupanija1);
+		zupanije.add(zupanija2);
+		zupanije.add(zupanija3);
+		zupanije.add(zupanija4);
+		
+		Velicinagrada tip = this.velicinaGradaDAO.findOne(3);
+		
+		List<Grad> gradovi = this.gradDAO.findByOrganizacijskaJedinicaInAndVelicinaGrada(zupanije, tip);
+		assertEquals(gradovi.size(), 1);
+		
+		gradovi = this.gradDAO.findByOrganizacijskaJedinicaIn(zupanije);
+		assertEquals(gradovi.size(), 14);
+		
+		gradovi = this.gradDAO.findByVelicinaGrada(tip);
+		assertEquals(gradovi.size(), 4);
 	}
 }

@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import models.Tipoj;
+import models.Velicinagrada;
 import repository.TipojDAO;
 
 @RunWith(SpringRunner.class)
@@ -60,5 +61,15 @@ public class ZadatakTipojRepositoryTest {
 		tipojDAO.delete(savedTipojA);
 		tipojDAO.delete(savedTipojB);
 		tipojDAO.delete(savedTipojC);
+	}
+	
+	@Test
+	public void testAktivniTipoviOrganizacije()
+	{
+		List<Tipoj> list = this.tipojDAO.findByAktivan(false);
+		assertTrue(list.size() == 0);
+		
+		list = this.tipojDAO.findByAktivan(true);
+		assertTrue(list.size() == 2);
 	}
 }

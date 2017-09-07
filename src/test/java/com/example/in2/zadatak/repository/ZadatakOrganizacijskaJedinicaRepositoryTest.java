@@ -16,7 +16,6 @@ import models.Organizacijskajedinica;
 import models.Tipoj;
 import repository.OrganizacijskaJedinicaDAO;
 import repository.TipojDAO;
-import repository.ZupanijaRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -24,8 +23,6 @@ public class ZadatakOrganizacijskaJedinicaRepositoryTest {
 
 	@Autowired
 	private OrganizacijskaJedinicaDAO organizacijskaJedinicaDAO;
-	@Autowired
-	private ZupanijaRepository zupanijaRepository;
 	@Autowired
 	private TipojDAO tipojDAO;
 	private List<Tipoj> listTipoj;
@@ -128,7 +125,7 @@ public class ZadatakOrganizacijskaJedinicaRepositoryTest {
 		regije.add(this.organizacijskaJedinicaDAO.findOne(3));
 		regije.add(this.organizacijskaJedinicaDAO.findOne(4));
 		
-		List<Organizacijskajedinica> zupanije = this.zupanijaRepository.findByParentIn(regije);
+		List<Organizacijskajedinica> zupanije = this.organizacijskaJedinicaDAO.findByParentIn(regije);
 		assertEquals(zupanije.size(), 14);
 	}
 }

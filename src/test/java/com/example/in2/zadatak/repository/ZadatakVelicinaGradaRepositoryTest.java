@@ -64,4 +64,14 @@ public class ZadatakVelicinaGradaRepositoryTest {
 		velicinaGradaDAO.delete(savedVelicinaGradaB);
 		velicinaGradaDAO.delete(savedVelicinaGradaC);
 	}
+	
+	@Test
+	public void testAktivniTipoviGradova()
+	{
+		List<Velicinagrada> list = this.velicinaGradaDAO.findByAktivan(false);
+		assertTrue(list.size() == 0);
+		
+		list = this.velicinaGradaDAO.findByAktivan(true);
+		assertTrue(list.size() == 3);
+	}
 }
