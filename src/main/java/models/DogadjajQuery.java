@@ -73,6 +73,8 @@ public class DogadjajQuery {
 
 	public void addGrad(Grad grad)
 	{
+		if(grad == null)
+			return;
 		if(this.gradovi == null)
 			this.gradovi = new ArrayList<Grad>();
 		this.gradovi.add(grad);
