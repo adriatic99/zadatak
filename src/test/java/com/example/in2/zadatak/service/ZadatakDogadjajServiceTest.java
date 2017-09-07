@@ -122,6 +122,10 @@ public class ZadatakDogadjajServiceTest {
         dq.setGradovi(null);
         list = this.dogadjajService.findByCriteria(dq);
         assertEquals(list.size(),1);
+        
+        dq.setOdVrijemePocetak(LocalDateTime.of(2017, 10, 10, 14, 30));
+        list = this.dogadjajService.findByCriteria(dq);
+        assertEquals(list.size(),0);
 	}
 
 }
