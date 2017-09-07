@@ -2,6 +2,7 @@ package com.example.in2.zadatak.repository;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -15,6 +16,7 @@ import models.Organizacijskajedinica;
 import models.Tipoj;
 import repository.OrganizacijskaJedinicaDAO;
 import repository.TipojDAO;
+import repository.ZupanijaRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -22,6 +24,8 @@ public class ZadatakOrganizacijskaJedinicaRepositoryTest {
 
 	@Autowired
 	private OrganizacijskaJedinicaDAO organizacijskaJedinicaDAO;
+	@Autowired
+	private ZupanijaRepository zupanijaRepository;
 	@Autowired
 	private TipojDAO tipojDAO;
 	private List<Tipoj> listTipoj;
@@ -113,5 +117,18 @@ public class ZadatakOrganizacijskaJedinicaRepositoryTest {
 		ojSavedD = this.organizacijskaJedinicaDAO.findOne(ojSavedD.getId());
 		this.organizacijskaJedinicaDAO.delete(ojSavedD.getId());
 		this.organizacijskaJedinicaDAO.delete(ojSavedA.getId());
+	}
+	
+	@Test
+	public void testZupanije()
+	{
+		List<Organizacijskajedinica> regije = new ArrayList<Organizacijskajedinica>();
+		regije.add(this.organizacijskaJedinicaDAO.findOne(1));
+		regije.add(this.organizacijskaJedinicaDAO.findOne(2));
+		regije.add(this.organizacijskaJedinicaDAO.findOne(3));
+		regije.add(this.organizacijskaJedinicaDAO.findOne(4));
+		
+		List<Organizacijskajedinica> zupanije = this.zupanijaRepository.findByParentIn(regije);
+		assertEquals(zupanije.size(), 14);
 	}
 }
