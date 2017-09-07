@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import models.Dogadjaj;
+import models.DogadjajCriteria;
 import models.Grad;
 import models.Tipoj;
 import repository.DogadjajCriteriaDAO;
@@ -99,14 +101,12 @@ public class ZadatakDogadjajRepositoryTest {
         Dogadjaj savedDogadjaj = this.dogadjajDAO.save(dogadjaj);
         
         //criteria
-        Dogadjaj d = new Dogadjaj();
-        d.setNaziv(naziv);
-        d.setGrad(grad);
+        DogadjajCriteria d = new DogadjajCriteria();
+        Grad g = this.gradDAO.findOne(4);
+        d.addGrad(g);
         
         List<Dogadjaj> list = this.dogadjajCriteriaDAO.getEvents(d);
         System.out.println("test");
-        
-        this.dogadjajDAO.delete(d);
 	}
 
 }

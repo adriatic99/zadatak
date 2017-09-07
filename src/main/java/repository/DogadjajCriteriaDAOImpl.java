@@ -13,8 +13,11 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import models.Dogadjaj;
+import models.DogadjajCriteria;
+import models.Grad;
 
 @Repository
 public class DogadjajCriteriaDAOImpl implements DogadjajCriteriaDAO {
@@ -23,7 +26,7 @@ public class DogadjajCriteriaDAOImpl implements DogadjajCriteriaDAO {
 	EntityManager entityManager;
 	
 	@Override
-	public List<Dogadjaj> getEvents(Dogadjaj dogadjaj) {
+	public List<Dogadjaj> getEvents(DogadjajCriteria dogadjaj) {
 		
 		CriteriaBuilder cb = this.entityManager.getCriteriaBuilder();
 		CriteriaQuery<Dogadjaj> query = cb.createQuery(Dogadjaj.class);
@@ -31,7 +34,7 @@ public class DogadjajCriteriaDAOImpl implements DogadjajCriteriaDAO {
 		
 		List<Predicate> predicates = new ArrayList<Predicate>();
 		
-		if(!dogadjaj.getNaziv().isEmpty())
+		if(StringUtils.hasText(dogadjaj.getNaziv()))
 		{
 			Predicate p = cb.equal(root.get("naziv"), dogadjaj.getNaziv());
 			predicates.add(p);
@@ -49,10 +52,14 @@ public class DogadjajCriteriaDAOImpl implements DogadjajCriteriaDAO {
 			predicates.add(p);
 		}
 		
-		if(dogadjaj.getGrad() != null)
+		if(dogadjaj.getGradovi()!=null && !dogadjaj.getGradovi().isEmpty())
 		{
 			Join<Object, Object> grad = root.join("grad");
-			Predicate p = cb.equal(grad.get("id"), dogadjaj.getGrad().getId());
+			List<Integer> ids = new ArrayList<Integer>();
+			for(Grad g : dogadjaj.getGradovi())
+				ids.add(g.getId());
+			//Predicate p = cb.in(grad.get("id"), dogadjaj.getGradovi());
+			Predicate p = grad.get("id").in(ids);
 			predicates.add(p);
 		}
 		
