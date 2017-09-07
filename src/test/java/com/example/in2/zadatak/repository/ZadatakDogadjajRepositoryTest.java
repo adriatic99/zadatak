@@ -83,30 +83,62 @@ public class ZadatakDogadjajRepositoryTest {
 	public void testDogadjajCriteria()
 	{
 		//test data
-		String naziv = "naziv";
-        LocalDateTime odVrijeme = LocalDateTime.of(2017, 2, 3, 10, 30);
-        LocalDateTime doVrijeme = LocalDateTime.of(2017, 2, 4, 12, 30);
-        boolean slobodanUlaz = true;
-        Grad grad = null;
-        if(!this.listGradovi.isEmpty())
-        	grad = this.listGradovi.get(0);
-        Dogadjaj dogadjaj = new Dogadjaj();
-        dogadjaj.setGrad(grad);
-        dogadjaj.setDoVrijeme(doVrijeme);
-        dogadjaj.setOdVrijeme(odVrijeme);
+		String naziv = "Dodjela nagrade";
+        LocalDateTime odVrijemePocetak = LocalDateTime.of(2017, 10, 10, 13, 30);
+        LocalDateTime odVrijemeKraj = LocalDateTime.of(2017, 10, 10, 14, 20);
+        LocalDateTime doVrijemePocetak = LocalDateTime.of(2017, 10, 10, 14, 30);
+        LocalDateTime doVrijemeKraj = LocalDateTime.of(2017, 10, 10, 16, 20);
+        boolean slobodanUlaz = false;
+        Grad grad = this.listGradovi.get(3);
+        DogadjajCriteria dogadjaj = new DogadjajCriteria();
+        dogadjaj.addGrad(grad);
+        dogadjaj.setOdVrijemePocetak(odVrijemePocetak);
+        dogadjaj.setOdVrijemeKraj(odVrijemeKraj);
+        dogadjaj.setDoVrijemePocetak(doVrijemePocetak);
+        dogadjaj.setDoVrijemeKraj(doVrijemeKraj);
         dogadjaj.setNaziv(naziv);
         dogadjaj.setSlobodanUlaz(slobodanUlaz);
-				
-        //save new records
-        Dogadjaj savedDogadjaj = this.dogadjajDAO.save(dogadjaj);
         
-        //criteria
-        DogadjajCriteria d = new DogadjajCriteria();
-        Grad g = this.gradDAO.findOne(4);
-        d.addGrad(g);
+        List<Dogadjaj> list = this.dogadjajCriteriaDAO.getEvents(dogadjaj);
+        assertEquals(list.size(),1);
         
-        List<Dogadjaj> list = this.dogadjajCriteriaDAO.getEvents(d);
-        System.out.println("test");
+        Dogadjaj dogadjajCriteria = list.get(0);
+        
+        assertEquals(dogadjaj.getNaziv(), dogadjajCriteria.getNaziv());
+        assertEquals(dogadjaj.isSlobodanUlaz(), dogadjajCriteria.isSlobodanUlaz());
+        
+        Grad belimanastir = this.listGradovi.get(4);
+        Grad donjimiholjac = this.listGradovi.get(5);
+        
+        dogadjaj.addGrad(donjimiholjac);
+        dogadjaj.addGrad(belimanastir);
+        
+        list = this.dogadjajCriteriaDAO.getEvents(dogadjaj);
+        assertEquals(list.size(),1);
+        
+        dogadjaj.setGradovi(null);
+        
+        list = this.dogadjajCriteriaDAO.getEvents(dogadjaj);
+        assertEquals(list.size(),1);
+        
+        doVrijemeKraj = LocalDateTime.of(2017, 10, 10, 15, 10);
+        dogadjaj.setDoVrijemeKraj(doVrijemeKraj);
+        list = this.dogadjajCriteriaDAO.getEvents(dogadjaj);
+        assertEquals(list.size(),1);
+        
+        dogadjaj.setNaziv("naziv");
+        list = this.dogadjajCriteriaDAO.getEvents(dogadjaj);
+        assertEquals(list.size(),0);
+        
+        dogadjaj.setNaziv(naziv);
+        list = this.dogadjajCriteriaDAO.getEvents(dogadjaj);
+        assertEquals(list.size(),1);
+        
+        doVrijemeKraj = LocalDateTime.of(2017, 10, 10, 15, 9);
+        dogadjaj.setDoVrijemeKraj(doVrijemeKraj);
+        list = this.dogadjajCriteriaDAO.getEvents(dogadjaj);
+        assertEquals(list.size(),0);
+        
 	}
 
 }

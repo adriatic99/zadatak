@@ -19,9 +19,11 @@ import converters.LocalDateTimeAttributeConverter;
 public class DogadjajCriteria {
 	 
     private String naziv;
-	private LocalDateTime odVrijeme;
-	private LocalDateTime doVrijeme;
-	private boolean slobodanUlaz;
+	private LocalDateTime odVrijemePocetak;
+	private LocalDateTime doVrijemePocetak;
+	private LocalDateTime odVrijemeKraj;
+	private LocalDateTime doVrijemeKraj;
+	private Boolean slobodanUlaz;
 	private List<Grad> gradovi;
 	public String getNaziv() {
 		return naziv;
@@ -29,22 +31,37 @@ public class DogadjajCriteria {
 	public void setNaziv(String naziv) {
 		this.naziv = naziv;
 	}
-	public LocalDateTime getOdVrijeme() {
-		return odVrijeme;
+	public LocalDateTime getOdVrijemePocetak() {
+		return odVrijemePocetak;
 	}
-	public void setOdVrijeme(LocalDateTime odVrijeme) {
-		this.odVrijeme = odVrijeme;
+	public void setOdVrijemePocetak(LocalDateTime odVrijemePocetak) {
+		this.odVrijemePocetak = odVrijemePocetak;
 	}
-	public LocalDateTime getDoVrijeme() {
-		return doVrijeme;
+	public LocalDateTime getDoVrijemePocetak() {
+		return doVrijemePocetak;
 	}
-	public void setDoVrijeme(LocalDateTime doVrijeme) {
-		this.doVrijeme = doVrijeme;
+	public void setDoVrijemePocetak(LocalDateTime doVrijemePocetak) {
+		this.doVrijemePocetak = doVrijemePocetak;
 	}
-	public boolean isSlobodanUlaz() {
+	public LocalDateTime getOdVrijemeKraj() {
+		return odVrijemeKraj;
+	}
+	public void setOdVrijemeKraj(LocalDateTime odVrijemeKraj) {
+		this.odVrijemeKraj = odVrijemeKraj;
+	}
+	public LocalDateTime getDoVrijemeKraj() {
+		return doVrijemeKraj;
+	}
+	public void setDoVrijemeKraj(LocalDateTime doVrijemeKraj) {
+		this.doVrijemeKraj = doVrijemeKraj;
+	}
+	public Boolean getSlobodanUlaz() {
 		return slobodanUlaz;
 	}
-	public void setSlobodanUlaz(boolean slobodanUlaz) {
+	public Boolean isSlobodanUlaz() {
+		return slobodanUlaz;
+	}
+	public void setSlobodanUlaz(Boolean slobodanUlaz) {
 		this.slobodanUlaz = slobodanUlaz;
 	}
 	public List<Grad> getGradovi() {

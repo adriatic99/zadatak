@@ -1,5 +1,7 @@
 package repository;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +10,7 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -40,15 +43,15 @@ public class DogadjajCriteriaDAOImpl implements DogadjajCriteriaDAO {
 			predicates.add(p);
 		}
 		
-		if(dogadjaj.getOdVrijeme() != null)
+		if(dogadjaj.getOdVrijemePocetak() != null && dogadjaj.getOdVrijemeKraj() != null)
 		{
-			Predicate p = cb.greaterThan(root.get("odvrijeme"), dogadjaj.getOdVrijeme());
+			Predicate p = cb.between(root.<LocalDateTime>get("odVrijeme"), dogadjaj.getOdVrijemePocetak(), dogadjaj.getOdVrijemeKraj());
 			predicates.add(p);
 		}
 		
-		if(dogadjaj.getDoVrijeme() != null)
+		if(dogadjaj.getDoVrijemePocetak() != null && dogadjaj.getDoVrijemeKraj() != null)
 		{
-			Predicate p = cb.lessThan(root.get("dovrijeme"), dogadjaj.getDoVrijeme());
+			Predicate p = cb.between(root.<LocalDateTime>get("doVrijeme"), dogadjaj.getDoVrijemePocetak(), dogadjaj.getDoVrijemeKraj());
 			predicates.add(p);
 		}
 		
@@ -58,8 +61,13 @@ public class DogadjajCriteriaDAOImpl implements DogadjajCriteriaDAO {
 			List<Integer> ids = new ArrayList<Integer>();
 			for(Grad g : dogadjaj.getGradovi())
 				ids.add(g.getId());
-			//Predicate p = cb.in(grad.get("id"), dogadjaj.getGradovi());
 			Predicate p = grad.get("id").in(ids);
+			predicates.add(p);
+		}
+		
+		if(dogadjaj.isSlobodanUlaz() != null)
+		{
+			Predicate p = cb.equal(root.get("slobodanUlaz"), dogadjaj.isSlobodanUlaz().booleanValue());
 			predicates.add(p);
 		}
 		
