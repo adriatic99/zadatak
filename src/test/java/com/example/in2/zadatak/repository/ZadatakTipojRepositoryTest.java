@@ -12,14 +12,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import models.Tipoj;
 import models.Velicinagrada;
-import repository.TipojDAO;
+import repository.TipojRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ZadatakTipojRepositoryTest {
 
 	@Autowired
-	private TipojDAO tipojDAO;
+	private TipojRepository tipojDAO;
 	
 	@Test
 	public void testTipojDAO()

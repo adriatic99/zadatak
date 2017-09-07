@@ -15,20 +15,20 @@ import org.springframework.test.context.junit4.SpringRunner;
 import models.Organizacijskajedinica;
 import models.Velicinagrada;
 import models.Grad;
-import repository.GradDAO;
-import repository.OrganizacijskaJedinicaDAO;
-import repository.VelicinaGradaDAO;
+import repository.GradRepository;
+import repository.OrganizacijskaJedinicaRepository;
+import repository.VelicinaGradaRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ZadatakGradRepositoryTest {
 
 	@Autowired
-	private GradDAO gradDAO;
+	private GradRepository gradDAO;
 	@Autowired
-	private VelicinaGradaDAO velicinaGradaDAO;
+	private VelicinaGradaRepository velicinaGradaDAO;
 	@Autowired
-	private OrganizacijskaJedinicaDAO organizacijskaJedinicaDAO;
+	private OrganizacijskaJedinicaRepository organizacijskaJedinicaDAO;
 	private List<Organizacijskajedinica> listOj;
 	private List<Velicinagrada> listTipGrada;
 	

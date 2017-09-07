@@ -9,7 +9,7 @@ import models.Grad;
 import models.Organizacijskajedinica;
 import models.Velicinagrada;
 
-public interface GradDAO extends JpaRepository<Grad, Integer> {
+public interface GradRepository extends JpaRepository<Grad, Integer> {
 	List<Grad> findByOrganizacijskaJedinicaInAndVelicinaGrada(
 			List<Organizacijskajedinica> zupanije, 
 			Velicinagrada tipGrada);

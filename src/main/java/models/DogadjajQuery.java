@@ -16,7 +16,7 @@ import javax.persistence.ManyToOne;
 
 import converters.LocalDateTimeAttributeConverter;
 
-public class DogadjajCriteria {
+public class DogadjajQuery {
 	 
     private String naziv;
 	private LocalDateTime odVrijemePocetak;

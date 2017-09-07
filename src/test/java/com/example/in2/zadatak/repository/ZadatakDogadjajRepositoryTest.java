@@ -16,24 +16,24 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import models.Dogadjaj;
-import models.DogadjajCriteria;
+import models.DogadjajQuery;
 import models.Grad;
 import models.Tipoj;
-import repository.DogadjajCriteriaDAO;
-import repository.DogadjajDAO;
-import repository.GradDAO;
-import repository.TipojDAO;
+import repository.DogadjajCriteria;
+import repository.DogadjajRepository;
+import repository.GradRepository;
+import repository.TipojRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ZadatakDogadjajRepositoryTest {
 
 	@Autowired
-	private DogadjajDAO dogadjajDAO;
+	private DogadjajRepository dogadjajRepository;
 	@Autowired
-	private DogadjajCriteriaDAO dogadjajCriteriaDAO;
+	private DogadjajCriteria dogadjajCriteria;
 	@Autowired
-	private GradDAO gradDAO;
+	private GradRepository gradDAO;
 	private List<Grad> listGradovi;
 	
 	@Before
@@ -61,14 +61,14 @@ public class ZadatakDogadjajRepositoryTest {
 		dogadjaj.setSlobodanUlaz(slobodanUlaz);
 		
 		//save new records
-		Dogadjaj savedDogadjaj = this.dogadjajDAO.save(dogadjaj);
+		Dogadjaj savedDogadjaj = this.dogadjajRepository.save(dogadjaj);
 	
 		//find all records
-		List<Dogadjaj> list = this.dogadjajDAO.findAll();
+		List<Dogadjaj> list = this.dogadjajRepository.findAll();
 		assertTrue(list.size() > 0);
 		
 		//find exact record
-		Dogadjaj foundDogadjaj = this.dogadjajDAO.findOne(savedDogadjaj.getId());
+		Dogadjaj foundDogadjaj = this.dogadjajRepository.findOne(savedDogadjaj.getId());
 		assertEquals(foundDogadjaj.getId(), savedDogadjaj.getId());
 		assertEquals(foundDogadjaj.getNaziv(), savedDogadjaj.getNaziv());
 		assertEquals(foundDogadjaj.getDoVrijeme(), savedDogadjaj.getDoVrijeme());
@@ -76,7 +76,7 @@ public class ZadatakDogadjajRepositoryTest {
 		assertEquals(foundDogadjaj.isSlobodanUlaz(), savedDogadjaj.isSlobodanUlaz());
 		
 		//delete record
-		this.dogadjajDAO.delete(foundDogadjaj);
+		this.dogadjajRepository.delete(foundDogadjaj);
 	}
 	
 	@Test
@@ -90,7 +90,7 @@ public class ZadatakDogadjajRepositoryTest {
         LocalDateTime doVrijemeKraj = LocalDateTime.of(2017, 10, 10, 16, 20);
         boolean slobodanUlaz = false;
         Grad grad = this.listGradovi.get(3);
-        DogadjajCriteria dogadjaj = new DogadjajCriteria();
+        DogadjajQuery dogadjaj = new DogadjajQuery();
         dogadjaj.addGrad(grad);
         dogadjaj.setOdVrijemePocetak(odVrijemePocetak);
         dogadjaj.setOdVrijemeKraj(odVrijemeKraj);
@@ -99,7 +99,7 @@ public class ZadatakDogadjajRepositoryTest {
         dogadjaj.setNaziv(naziv);
         dogadjaj.setSlobodanUlaz(slobodanUlaz);
         
-        List<Dogadjaj> list = this.dogadjajCriteriaDAO.getEvents(dogadjaj);
+        List<Dogadjaj> list = this.dogadjajCriteria.getEvents(dogadjaj);
         assertEquals(list.size(),1);
         
         Dogadjaj dogadjajCriteria = list.get(0);
@@ -113,30 +113,30 @@ public class ZadatakDogadjajRepositoryTest {
         dogadjaj.addGrad(donjimiholjac);
         dogadjaj.addGrad(belimanastir);
         
-        list = this.dogadjajCriteriaDAO.getEvents(dogadjaj);
+        list = this.dogadjajCriteria.getEvents(dogadjaj);
         assertEquals(list.size(),1);
         
         dogadjaj.setGradovi(null);
         
-        list = this.dogadjajCriteriaDAO.getEvents(dogadjaj);
+        list = this.dogadjajCriteria.getEvents(dogadjaj);
         assertEquals(list.size(),1);
         
         doVrijemeKraj = LocalDateTime.of(2017, 10, 10, 15, 10);
         dogadjaj.setDoVrijemeKraj(doVrijemeKraj);
-        list = this.dogadjajCriteriaDAO.getEvents(dogadjaj);
+        list = this.dogadjajCriteria.getEvents(dogadjaj);
         assertEquals(list.size(),1);
         
         dogadjaj.setNaziv("naziv");
-        list = this.dogadjajCriteriaDAO.getEvents(dogadjaj);
+        list = this.dogadjajCriteria.getEvents(dogadjaj);
         assertEquals(list.size(),0);
         
         dogadjaj.setNaziv(naziv);
-        list = this.dogadjajCriteriaDAO.getEvents(dogadjaj);
+        list = this.dogadjajCriteria.getEvents(dogadjaj);
         assertEquals(list.size(),1);
         
         doVrijemeKraj = LocalDateTime.of(2017, 10, 10, 15, 9);
         dogadjaj.setDoVrijemeKraj(doVrijemeKraj);
-        list = this.dogadjajCriteriaDAO.getEvents(dogadjaj);
+        list = this.dogadjajCriteria.getEvents(dogadjaj);
         assertEquals(list.size(),0);
         
 	}

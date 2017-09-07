@@ -19,17 +19,17 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import models.Dogadjaj;
-import models.DogadjajCriteria;
+import models.DogadjajQuery;
 import models.Grad;
 
 @Repository
-public class DogadjajCriteriaDAOImpl implements DogadjajCriteriaDAO {
+public class DogadjajCriteriaImpl implements DogadjajCriteria {
 
 	@Autowired
 	EntityManager entityManager;
 	
 	@Override
-	public List<Dogadjaj> getEvents(DogadjajCriteria dogadjaj) {
+	public List<Dogadjaj> getEvents(DogadjajQuery dogadjaj) {
 		
 		CriteriaBuilder cb = this.entityManager.getCriteriaBuilder();
 		CriteriaQuery<Dogadjaj> query = cb.createQuery(Dogadjaj.class);

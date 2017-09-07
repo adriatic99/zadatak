@@ -14,17 +14,17 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import models.Organizacijskajedinica;
 import models.Tipoj;
-import repository.OrganizacijskaJedinicaDAO;
-import repository.TipojDAO;
+import repository.OrganizacijskaJedinicaRepository;
+import repository.TipojRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ZadatakOrganizacijskaJedinicaRepositoryTest {
 
 	@Autowired
-	private OrganizacijskaJedinicaDAO organizacijskaJedinicaDAO;
+	private OrganizacijskaJedinicaRepository organizacijskaJedinicaDAO;
 	@Autowired
-	private TipojDAO tipojDAO;
+	private TipojRepository tipojDAO;
 	private List<Tipoj> listTipoj;
 	
 	@Before

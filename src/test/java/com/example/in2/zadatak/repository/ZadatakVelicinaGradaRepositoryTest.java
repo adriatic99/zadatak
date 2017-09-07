@@ -12,15 +12,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import models.Tipoj;
 import models.Velicinagrada;
-import repository.TipojDAO;
-import repository.VelicinaGradaDAO;
+import repository.TipojRepository;
+import repository.VelicinaGradaRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ZadatakVelicinaGradaRepositoryTest {
 
 	@Autowired
-	private VelicinaGradaDAO velicinaGradaDAO;
+	private VelicinaGradaRepository velicinaGradaDAO;
 	
 	@Test
 	public void testVelicinaGradaDAO()

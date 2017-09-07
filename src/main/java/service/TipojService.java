@@ -5,14 +5,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import models.Tipoj;
-import repository.TipojDAO;
+import repository.TipojRepository;
 
 @Service
 @Component
 public class TipojService {
 
 	@Autowired
-	TipojDAO tipDAO;
+	TipojRepository tipDAO;
 	
 	public void save(Tipoj tip)
 	{
