@@ -2,5 +2,8 @@ package models;
 
 public enum EnumTipojSifra {
 	REGIJA,
-	ZUPANIJA
+	ZUPANIJA;
+	public int getValue() {
+		return this.ordinal() + 1;
+	}
 }

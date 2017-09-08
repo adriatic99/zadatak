@@ -43,18 +43,21 @@ public class OrganizacijskajedinicaServiceImpl implements Organizacijskajedinica
 
 	@Override
 	public List<Organizacijskajedinica> findByParentIn(List<Organizacijskajedinica> regije) {
-		return this.findByParentIn(regije);
+		if(regije == null || regije.isEmpty())
+			return this.getZupanije();
+		else
+			return this.organizacijskajedinicaRepository.findByParentIn(regije);
 	}
 
 	@Override
 	public List<Organizacijskajedinica> getRegije() {
-		Tipoj tipoj = this.tipojRepository.findOne(EnumTipojSifra.REGIJA.ordinal());
+		Tipoj tipoj = this.tipojRepository.findOne(EnumTipojSifra.REGIJA.getValue());
 		return this.organizacijskajedinicaRepository.findByTipoj(tipoj);
 	}
 
 	@Override
 	public List<Organizacijskajedinica> getZupanije() {
-		Tipoj tipoj = this.tipojRepository.findOne(EnumTipojSifra.ZUPANIJA.ordinal());
+		Tipoj tipoj = this.tipojRepository.findOne(EnumTipojSifra.ZUPANIJA.getValue());
 		return this.organizacijskajedinicaRepository.findByTipoj(tipoj);
 	}
 
