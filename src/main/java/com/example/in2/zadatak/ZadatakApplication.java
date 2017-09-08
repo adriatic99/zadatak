@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@SpringBootApplication(scanBasePackages = { "service" , "converter", "repository"})
+@SpringBootApplication(scanBasePackages = { "service" , "converter", "repository", "ui"})
 @EnableJpaRepositories(basePackages = "repository")
 @EntityScan("models")
 public class ZadatakApplication {
