@@ -15,6 +15,8 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBoxGroup;
+import com.vaadin.ui.DateField;
+import com.vaadin.ui.DateTimeField;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.ListSelect;
@@ -72,9 +74,22 @@ public class StartVaadin extends UI {
 	    HorizontalLayout lay = new HorizontalLayout();
 	    panelData.setContent(lay);
 	    
-	    TextField naziv = new TextField();
-	    Binder binderNaziv = new Binder<>(DogadjajQuery.class);
-	    binderNaziv.bind(naziv, DogadjajQuery::getNaziv, DogadjajQuery::setNaziv);
+	    TextField naziv = new TextField("Naziv");
+	    Binder<DogadjajQuery> binder = new Binder<>();
+	    binder.bind(naziv, DogadjajQuery::getNaziv, DogadjajQuery::setNaziv);
+	    binder.bindInstanceFields(dq);
+	    binder.setBean(dq);
+	    binder.addStatusChangeListener(e -> {
+    	    dogadjaji = this.dogadjajService.findByCriteria(dq);
+    	    grid.setItems(dogadjaji);
+	    });
+	    lay.addComponent(naziv);
+	    
+	    DateTimeField dateOdVrijemePocetak = new DateTimeField("vrijeme od početka");
+	    binder.forField(dateOdVrijemePocetak).
+	    	bind(DogadjajQuery::getOdVrijemePocetak, 
+	    			DogadjajQuery::setOdVrijemePocetak);
+	    lay.addComponent(dateOdVrijemePocetak);
 	    
 	    CheckBoxGroup<Organizacijskajedinica> regije = new CheckBoxGroup<Organizacijskajedinica>
 	    						("Izaberi regije");
