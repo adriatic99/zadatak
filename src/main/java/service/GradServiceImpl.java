@@ -75,4 +75,15 @@ public class GradServiceImpl implements GradService {
 		Velicinagrada tip = this.velicinaGradaRepository.findOne(EnumVelicinaGradaSifra.VELIKI.ordinal());
 		return this.gradRepository.findByVelicinaGrada(tip);
 	}
+
+	@Override
+	public List<Grad> findByVelicinaGradaIn(List<Velicinagrada> tipGradaList) {
+		return this.gradRepository.findByVelicinaGradaIn(tipGradaList);
+	}
+
+	@Override
+	public List<Grad> findByOrganizacijskaJedinicaInAndVelicinaGradaIn(List<Organizacijskajedinica> zupanije,
+			List<Velicinagrada> tipGradaList) {
+		return this.gradRepository.findByOrganizacijskaJedinicaInAndVelicinaGradaIn(zupanije, tipGradaList);
+	}
 }

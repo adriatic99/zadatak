@@ -13,7 +13,11 @@ public interface GradRepository extends JpaRepository<Grad, Integer> {
 	List<Grad> findByOrganizacijskaJedinicaInAndVelicinaGrada(
 			List<Organizacijskajedinica> zupanije, 
 			Velicinagrada tipGrada);
+	List<Grad> findByOrganizacijskaJedinicaInAndVelicinaGradaIn(
+			List<Organizacijskajedinica> zupanije, 
+			List<Velicinagrada> tipGradaList);
 	List<Grad> findByOrganizacijskaJedinicaIn(
 			List<Organizacijskajedinica> zupanije);
 	List<Grad> findByVelicinaGrada(Velicinagrada tipGrada);
+	List<Grad> findByVelicinaGradaIn(List<Velicinagrada> tipGradaList);
 }

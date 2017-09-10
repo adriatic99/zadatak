@@ -82,6 +82,13 @@ public class Dogadjaj implements Serializable {
 		this.doVrijeme = doVrijeme;
 	}
 
+	public String getSlobodanUlazString() {
+		if(this.slobodanUlaz)
+			return "Da";
+		else
+			return "Ne";
+	}
+	
 	public boolean isSlobodanUlaz() {
 		return slobodanUlaz;
 	}

@@ -25,6 +25,18 @@ public class DogadjajQuery {
 	private LocalDateTime doVrijemeKraj;
 	private Boolean slobodanUlaz;
 	private List<Grad> gradovi;
+	
+	public void ponisti()
+	{
+		this.naziv = null;
+		this.odVrijemePocetak = null;
+		this.doVrijemePocetak = null;
+		this.odVrijemeKraj = null;
+		this.doVrijemeKraj = null;
+		this.slobodanUlaz = null;
+		this.gradovi = null;
+	}
+	
 	public String getNaziv() {
 		return naziv;
 	}
@@ -63,6 +75,24 @@ public class DogadjajQuery {
 	}
 	public void setSlobodanUlaz(Boolean slobodanUlaz) {
 		this.slobodanUlaz = slobodanUlaz;
+	}
+	public void setSlobodanUlazString(String value) {
+		if(value.equals("Da"))
+			this.slobodanUlaz = true;
+		else if(value.equals("Ne"))
+			this.slobodanUlaz = false;
+		else
+			this.slobodanUlaz = null;
+	}
+	public String getSlobodanUlazString() {
+		if(this.slobodanUlaz == null)
+			return "Nevažno";
+		else if(this.slobodanUlaz.booleanValue() == true)
+			return "Da";
+		else if(this.slobodanUlaz.booleanValue() == false)
+			return "Ne";
+		else
+			return "Nevažno";
 	}
 	public List<Grad> getGradovi() {
 		return gradovi;
