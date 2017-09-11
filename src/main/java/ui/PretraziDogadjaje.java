@@ -4,11 +4,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.data.Binder;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -50,19 +53,28 @@ public class PretraziDogadjaje extends VerticalLayout implements View {
 	private DogadjajQuery dq = new DogadjajQuery();
 	List<Dogadjaj> dogadjaji;
 	Grid<Dogadjaj> grid = new Grid<>(Dogadjaj.class);
+	CheckBoxGroup<Organizacijskajedinica> regije;
+	CheckBoxGroup<Organizacijskajedinica> zupanije;
+	CheckBoxGroup<Velicinagrada> tipGrada;
+	ListSelect<Grad> gradovi;
 	
 	public PretraziDogadjaje()
 	{
 		setSizeFull();
 		this.setMargin(true);
-		String notification = "notification";
-	    addComponent(new Button("Click me", e -> Notification.show(notification)));
-	    this.getUI().getNavigator().navigateTo("unosDogadjaj");
-	    dogadjaji = this.dogadjajService.findByCriteria(dq);
 	    
-	    this.panelGrid();
-	    this.panelData();
 	}
+	
+	 @PostConstruct
+	 void init() 
+	 {
+		 dogadjaji = this.dogadjajService.findByCriteria(dq);
+		    
+		 this.panelButtons();
+		 this.panelGrid();
+		 this.panelData();
+	     this.panelGradovi();
+	 }
 	
 	//Panel: grid
 	private void panelGrid()
@@ -148,136 +160,44 @@ public class PretraziDogadjaje extends VerticalLayout implements View {
 		panel.setContent(vertical);
 		this.addComponent(panel);
 		
-		CheckBoxGroup<Organizacijskajedinica> regije = new CheckBoxGroup<Organizacijskajedinica>
+		regije = new CheckBoxGroup<Organizacijskajedinica>
 			("Izaberi regije");
 		List<Organizacijskajedinica> items = this.oj.getRegije();
 		regije.setItems(items);
 		regije.setItemCaptionGenerator(Organizacijskajedinica::getNaziv);
 		vertical.addComponent(regije);
 		
-		CheckBoxGroup<Organizacijskajedinica> zupanije = new CheckBoxGroup<Organizacijskajedinica>
+		zupanije = new CheckBoxGroup<Organizacijskajedinica>
 			("Izaberi županije");
 		List<Organizacijskajedinica> selectedRegije = regije.getValue().stream().collect(Collectors.toList());
 		zupanije.setItems(this.oj.findByParentIn(selectedRegije));
 		zupanije.setItemCaptionGenerator(Organizacijskajedinica::getNaziv);
 		vertical.addComponent(zupanije);
 		
-		CheckBoxGroup<Velicinagrada> tipGrada = new CheckBoxGroup<Velicinagrada>("Izaberi tip grada");
+		tipGrada = new CheckBoxGroup<Velicinagrada>("Izaberi tip grada");
 		tipGrada.setItems(this.velicinaGradaService.findAktivni());
 		tipGrada.setItemCaptionGenerator(Velicinagrada::getNaziv);
 		vertical.addComponent(tipGrada);
 		
-		ListSelect<Grad> gradovi = new ListSelect<Grad>("Izaberi grad");
+		gradovi = new ListSelect<Grad>("Izaberi grad");
 		gradovi.setItems(this.gradService.findAll());
 		gradovi.setItemCaptionGenerator(Grad::getNaziv);
 		vertical.addComponent(gradovi);
 		
-		regije.addSelectionListener(e -> {
-		
-			Set<Organizacijskajedinica> selectedRegijeSet = e.getAllSelectedItems();
-			List<Organizacijskajedinica> selectedRegijeList = selectedRegijeSet.stream().collect(Collectors.toList());
-			List<Organizacijskajedinica> selectItemsZupanije = this.oj.findByParentIn(selectedRegijeList);
-			zupanije.setItems(selectItemsZupanije);
-		
-			if(zupanije.getSelectedItems() == null || zupanije.getSelectedItems().isEmpty())
-		{
-				List<Organizacijskajedinica> selectedZupanijeList = null;
-			List<Velicinagrada> selectedVelicinaGradaSelectedList = null;
-		
-			selectedZupanijeList = selectItemsZupanije;
-		
-			Set<Velicinagrada> setVelicinaGradaSelected = tipGrada.getSelectedItems();
-			if(setVelicinaGradaSelected != null && !setVelicinaGradaSelected.isEmpty())
-				selectedVelicinaGradaSelectedList = setVelicinaGradaSelected.stream().collect(Collectors.toList());
-		
-			if(selectedZupanijeList == null && selectedVelicinaGradaSelectedList == null)
-				gradovi.setItems(this.gradService.findAll());
-			else if(selectedZupanijeList == null)
-				gradovi.setItems(this.gradService.findByVelicinaGradaIn(selectedVelicinaGradaSelectedList));
-			else if(selectedVelicinaGradaSelectedList == null)
-				gradovi.setItems(this.gradService.findByOrganizacijskaJedinicaIn(selectedZupanijeList));
-			else
-				gradovi.setItems(this.gradService.findByOrganizacijskaJedinicaInAndVelicinaGradaIn(
-						selectedZupanijeList,
-						selectedVelicinaGradaSelectedList));
-		}
-		});
+		regije.addSelectionListener(e ->
+			selectRegije(regije, zupanije, tipGrada, gradovi));
 		
 		gradovi.addSelectionListener(e -> {
-		
-		List<Grad> selectedGradoviList;
-		if(e.getAllSelectedItems() == null || e.getAllSelectedItems().isEmpty())
-		selectedGradoviList = this.gradService.findAll();
-		else
-		{
-		Set<Grad> selectedGradoviSet = e.getAllSelectedItems();
-		selectedGradoviList = selectedGradoviSet.stream().collect(Collectors.toList()); 
-		}
-		dq.setGradovi(selectedGradoviList);
-		dogadjaji = this.dogadjajService.findByCriteria(dq);
-		grid.setItems(dogadjaji);
+			selectGrad(gradovi);
 		});
 		
 		zupanije.addSelectionListener(e -> {
-		
-			List<Organizacijskajedinica> selectedZupanijeList = null;
-			List<Velicinagrada> selectedVelicinaGradaSelectedList = null;
-		
-			Set<Organizacijskajedinica> selectedZupanije = e.getAllSelectedItems();
-			if(selectedZupanije != null && !selectedZupanije.isEmpty())
-				selectedZupanijeList = selectedZupanije.stream().collect(Collectors.toList());
-			Set<Velicinagrada> setVelicinaGradaSelected = tipGrada.getSelectedItems();
-			if(setVelicinaGradaSelected != null && !setVelicinaGradaSelected.isEmpty())
-				selectedVelicinaGradaSelectedList = setVelicinaGradaSelected.stream().collect(Collectors.toList());
-		
-			if(selectedZupanijeList == null && selectedVelicinaGradaSelectedList == null)
-				gradovi.setItems(this.gradService.findAll());
-			else if(selectedZupanijeList == null)
-				gradovi.setItems(this.gradService.findByVelicinaGradaIn(selectedVelicinaGradaSelectedList));
-			else if(selectedVelicinaGradaSelectedList == null)
-				gradovi.setItems(this.gradService.findByOrganizacijskaJedinicaIn(selectedZupanijeList));
-			else
-				gradovi.setItems(this.gradService.findByOrganizacijskaJedinicaInAndVelicinaGradaIn(
-						selectedZupanijeList,
-						selectedVelicinaGradaSelectedList));
+			selectZupanije(zupanije, tipGrada, gradovi);
 		});
 		
 		tipGrada.addSelectionListener(e -> {
-		
-		List<Organizacijskajedinica> selectedZupanijeList = null;
-		List<Velicinagrada> selectedVelicinaGradaSelectedList = null;
-		
-		Set<Organizacijskajedinica> selectedZupanije = zupanije.getSelectedItems();
-		if(selectedZupanije != null && !selectedZupanije.isEmpty())
-		selectedZupanijeList = selectedZupanije.stream().collect(Collectors.toList());
-		Set<Velicinagrada> setVelicinaGradaSelected = tipGrada.getSelectedItems();
-		if(setVelicinaGradaSelected != null && !setVelicinaGradaSelected.isEmpty())
-		selectedVelicinaGradaSelectedList = setVelicinaGradaSelected.stream().collect(Collectors.toList());
-		
-		if(selectedZupanijeList == null && selectedVelicinaGradaSelectedList == null)
-		gradovi.setItems(this.gradService.findAll());
-		else if(selectedZupanijeList == null)
-		gradovi.setItems(this.gradService.findByVelicinaGradaIn(selectedVelicinaGradaSelectedList));
-		else if(selectedVelicinaGradaSelectedList == null)
-		gradovi.setItems(this.gradService.findByOrganizacijskaJedinicaIn(selectedZupanijeList));
-		else
-		gradovi.setItems(this.gradService.findByOrganizacijskaJedinicaInAndVelicinaGradaIn(
-		selectedZupanijeList,
-		selectedVelicinaGradaSelectedList));
+			selectZupanije(zupanije, tipGrada, gradovi);
 		});
-		
-		this.addComponent(panel);
-	}
-	
-	private void selectGradove(CheckBoxGroup<Organizacijskajedinica> regije,
-			CheckBoxGroup<Organizacijskajedinica> zupanije,
-			CheckBoxGroup<Velicinagrada> tipGrada,
-			ListSelect<Grad> gradovi)
-	{
-		Set<Organizacijskajedinica> selectedRegijeSet = regije.getSelectedItems();
-		Set<Organizacijskajedinica> selectedZupanijeSet = zupanije.getSelectedItems();
-		Set<Velicinagrada> selectedVelicinaGRadaSet = tipGrada.getSelectedItems();
-		Set<Grad> selectedGradSet = gradovi.getSelectedItems();
 	}
 	
 	//Panel: Button
@@ -286,23 +206,99 @@ public class PretraziDogadjaje extends VerticalLayout implements View {
 		Panel panel = new Panel();
 		HorizontalLayout layout = new HorizontalLayout();
 		panel.setContent(layout);
-		this.addComponent(panel);
 		
-		Button ponisti = new Button("Poništi");
-		ponisti.addClickListener(new ClickListener() {
-			@Override
-			public void buttonClick(ClickEvent event) {
-				dq.ponisti();
-			}
+		Button ponisti = new Button("Ponisti");
+		ponisti.addClickListener(e -> {
+			dq.ponisti();
+			regije.setItems(this.oj.getRegije());
+			zupanije.setItems(this.oj.getZupanije());
+			tipGrada.setItems(this.velicinaGradaService.findAktivni());
+			gradovi.setItems(this.gradService.findAll());
 		});
+		layout.addComponent(ponisti);
 		
-		Button unos = new Button("Unesi događaji");
+		Button unos = new Button("Unesi dogadjaj");
 		unos.addClickListener(clickEvent ->
 	    	this.getUI().getNavigator().navigateTo("unosDogadjaj"));
+		layout.addComponent(unos);
+		
+		this.addComponent(panel);
+	}
+	
+	//selektiranje regije
+	public void selectRegije(CheckBoxGroup<Organizacijskajedinica> regije,
+			CheckBoxGroup<Organizacijskajedinica> zupanije,
+			CheckBoxGroup<Velicinagrada> tipGrada,
+			ListSelect<Grad> gradovi)
+	{
+		List<Organizacijskajedinica> zupanijeList = null;
+		Set<Organizacijskajedinica> selectedRegijeSet = regije.getSelectedItems();
+		if(selectedRegijeSet == null || selectedRegijeSet.isEmpty())
+			zupanijeList = this.oj.getZupanije();
+		else
+		{
+			List<Organizacijskajedinica> selectedRegijeList = selectedRegijeSet.stream().collect(Collectors.toList());
+			zupanijeList = this.oj.findByParentIn(selectedRegijeList);
+		}
+		Set<Organizacijskajedinica> selectedZupanijeSet = zupanije.getSelectedItems();
+		zupanije.setItems(zupanijeList);
+		zupanije.setValue(selectedZupanijeSet);
+		this.selectZupanije(zupanije, tipGrada, gradovi);
+	}
+	
+	//selektiranje županije
+	public void selectZupanije(CheckBoxGroup<Organizacijskajedinica> zupanije,
+			CheckBoxGroup<Velicinagrada> tipGrada,
+			ListSelect<Grad> gradovi)
+	{
+		Set<Organizacijskajedinica> selectedZupanijeSet = zupanije.getSelectedItems();
+		Set<Velicinagrada> selectedVelicinaGradaSet = tipGrada.getSelectedItems();
+		Set<Grad> selectedGradSet = gradovi.getSelectedItems();
+		if((selectedZupanijeSet == null || selectedZupanijeSet.isEmpty()) && 
+				(selectedVelicinaGradaSet == null || selectedVelicinaGradaSet.isEmpty()))
+		{
+			gradovi.setItems(this.gradService.findAll());
+		}
+		else if(selectedZupanijeSet == null || selectedZupanijeSet.isEmpty())
+		{
+			List<Velicinagrada> tipGradovaList = selectedVelicinaGradaSet.stream().collect(Collectors.toList());
+			this.gradService.findByVelicinaGradaIn(tipGradovaList);
+		}
+		else if(selectedVelicinaGradaSet == null || selectedVelicinaGradaSet.isEmpty())
+		{
+			List<Organizacijskajedinica> tipZupanijeList = selectedZupanijeSet.stream().collect(Collectors.toList());
+			this.gradService.findByOrganizacijskaJedinicaIn(tipZupanijeList);
+		}
+		else
+		{
+			List<Organizacijskajedinica> tipZupanijeList = selectedZupanijeSet.stream().collect(Collectors.toList());
+			List<Velicinagrada> tipGradovaList = selectedVelicinaGradaSet.stream().collect(Collectors.toList());
+			this.gradService.findByOrganizacijskaJedinicaInAndVelicinaGradaIn(tipZupanijeList, tipGradovaList);
+		}
+		
+		for(Grad grad : selectedGradSet)
+		{
+			gradovi.select(grad);
+		}
+	}
+	
+	//selektiranje tip grada
+	public void selectTipGrada(CheckBoxGroup<Organizacijskajedinica> zupanije,
+			CheckBoxGroup<Velicinagrada> tipGrada,
+			ListSelect<Grad> gradovi)
+	{
+			
+	}
+	
+	//selektiranje grada
+	public void selectGrad(ListSelect<Grad> gradovi)
+	{
+		this.dq.setGradovi(gradovi.getSelectedItems().stream().collect(Collectors.toList()));
+		this.dogadjajService.findByCriteria(this.dq);	
 	}
 	
 	@Override
     public void enter(ViewChangeEvent event) {
-		
+		System.out.println("Pretrazi Događaj");
     }
 }

@@ -17,6 +17,7 @@ import com.vaadin.navigator.Navigator;
 import com.vaadin.server.Setter;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
+import com.vaadin.spring.navigator.SpringViewProvider;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBoxGroup;
 import com.vaadin.ui.DateField;
@@ -58,14 +59,17 @@ public class StartVaadin extends UI {
 	private DogadjajQuery dq = new DogadjajQuery();
 	List<Dogadjaj> dogadjaji;
 	Navigator navigator = this.getUI().getNavigator();
+	@Autowired
+    private SpringViewProvider viewProvider;
 	
 	@Override
 	protected void init(VaadinRequest request) {
 		
-	    
-	    Navigator navigator = this.getNavigator();
+		final Panel viewContainer = new Panel();
+        viewContainer.setSizeFull();
+	    Navigator navigator = new Navigator(this, viewContainer);
+	    navigator.addProvider(viewProvider);
 	    navigator.navigateTo("searchDogadjaj");
-	    
 	    
 	    VerticalLayout verticalMain = new VerticalLayout();
 	    
