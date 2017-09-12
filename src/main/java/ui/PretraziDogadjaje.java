@@ -16,6 +16,7 @@ import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.CheckBoxGroup;
 import com.vaadin.ui.DateTimeField;
 import com.vaadin.ui.Grid;
@@ -57,6 +58,7 @@ public class PretraziDogadjaje extends VerticalLayout implements View {
 	CheckBoxGroup<Organizacijskajedinica> zupanije;
 	CheckBoxGroup<Velicinagrada> tipGrada;
 	ListSelect<Grad> gradovi;
+	Binder<DogadjajQuery> binder;
 	
 	public PretraziDogadjaje()
 	{
@@ -105,7 +107,7 @@ public class PretraziDogadjaje extends VerticalLayout implements View {
 	    panelData.setContent(lay);
 	    
 	    TextField naziv = new TextField("Naziv");
-	    Binder<DogadjajQuery> binder = new Binder<>();
+	    binder = new Binder<>();
 	    binder.bind(naziv, DogadjajQuery::getNaziv, DogadjajQuery::setNaziv);
 	    binder.bindInstanceFields(dq);
 	    binder.setBean(dq);
@@ -210,6 +212,7 @@ public class PretraziDogadjaje extends VerticalLayout implements View {
 		Button ponisti = new Button("Ponisti");
 		ponisti.addClickListener(e -> {
 			dq.ponisti();
+			binder.readBean(dq);
 			regije.setItems(this.oj.getRegije());
 			zupanije.setItems(this.oj.getZupanije());
 			tipGrada.setItems(this.velicinaGradaService.findAktivni());
@@ -241,7 +244,7 @@ public class PretraziDogadjaje extends VerticalLayout implements View {
 		}
 		Set<Organizacijskajedinica> selectedZupanijeSet = zupanije.getSelectedItems();
 		zupanije.setItems(zupanijeList);
-		zupanije.setValue(selectedZupanijeSet);
+		//zupanije.setValue(selectedZupanijeSet);
 	}
 	
 	//selektiranje županije
@@ -274,10 +277,8 @@ public class PretraziDogadjaje extends VerticalLayout implements View {
 			gradovi.setItems(this.gradService.findByOrganizacijskaJedinicaInAndVelicinaGradaIn(tipZupanijeList, tipGradovaList));
 		}
 		
-		for(Grad grad : selectedGradSet)
-		{
-			gradovi.select(grad);
-		}
+		gradovi.setValue(selectedGradSet);
+		this.selectGrad(gradovi);
 	}
 	
 	//selektiranje tip grada
@@ -292,7 +293,7 @@ public class PretraziDogadjaje extends VerticalLayout implements View {
 	public void selectGrad(ListSelect<Grad> gradovi)
 	{
 		this.dq.setGradovi(gradovi.getSelectedItems().stream().collect(Collectors.toList()));
-		this.dogadjajService.findByCriteria(this.dq);	
+		grid.setItems(this.dogadjajService.findByCriteria(this.dq));	
 	}
 	
 	@Override
