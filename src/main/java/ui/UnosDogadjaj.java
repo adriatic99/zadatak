@@ -25,6 +25,7 @@ import com.vaadin.ui.RadioButtonGroup;
 import com.vaadin.ui.TextField;
 
 import models.Dogadjaj;
+import models.Grad;
 import service.DogadjajService;
 import service.GradService;
 
@@ -82,8 +83,9 @@ public class UnosDogadjaj extends FormLayout implements View {
 	    	
 	    });
 	    
-	    ComboBox listGradovi = new ComboBox("Izaberi grad");
+	    ComboBox<Grad> listGradovi = new ComboBox("Izaberi grad");
 	    listGradovi.setItems(this.gradService.findAll());
+	    listGradovi.setItemCaptionGenerator(Grad::getNaziv);
 	    binder.bind(listGradovi, Dogadjaj::getGrad, Dogadjaj::setGrad);
 	    
 	    this.addComponent(naziv);
@@ -106,11 +108,7 @@ public class UnosDogadjaj extends FormLayout implements View {
 	    		});
 	    this.addComponent(saveButton);
 	    
-	    Button pretraziButton = new Button("Pretraži događaj");
-	    pretraziButton.addClickListener(clickEvent ->
-		    	this.getUI().getNavigator().navigateTo("searchDogadjaj"));
 	    
-	    this.addComponent(pretraziButton);
 	    
 	}
 	

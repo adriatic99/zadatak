@@ -220,10 +220,6 @@ public class PretraziDogadjaje extends VerticalLayout implements View {
 		});
 		layout.addComponent(ponisti);
 		
-		Button unos = new Button("Unesi dogadjaj");
-		unos.addClickListener(clickEvent ->
-	    	this.getUI().getNavigator().navigateTo("unosDogadjaj"));
-		layout.addComponent(unos);
 		this.addComponent(panel);
 	}
 	
