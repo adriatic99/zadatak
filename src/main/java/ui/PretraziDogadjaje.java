@@ -155,7 +155,7 @@ public class PretraziDogadjaje extends VerticalLayout implements View {
 	//Panel: regije, županije, gradovi...
 	public void panelGradovi()
 	{
-		VerticalLayout vertical = new VerticalLayout();
+		HorizontalLayout vertical = new HorizontalLayout();
 		Panel panel = new Panel();
 		panel.setContent(vertical);
 		this.addComponent(panel);
@@ -221,7 +221,6 @@ public class PretraziDogadjaje extends VerticalLayout implements View {
 		unos.addClickListener(clickEvent ->
 	    	this.getUI().getNavigator().navigateTo("unosDogadjaj"));
 		layout.addComponent(unos);
-		
 		this.addComponent(panel);
 	}
 	
@@ -243,7 +242,6 @@ public class PretraziDogadjaje extends VerticalLayout implements View {
 		Set<Organizacijskajedinica> selectedZupanijeSet = zupanije.getSelectedItems();
 		zupanije.setItems(zupanijeList);
 		zupanije.setValue(selectedZupanijeSet);
-		this.selectZupanije(zupanije, tipGrada, gradovi);
 	}
 	
 	//selektiranje županije
@@ -262,18 +260,18 @@ public class PretraziDogadjaje extends VerticalLayout implements View {
 		else if(selectedZupanijeSet == null || selectedZupanijeSet.isEmpty())
 		{
 			List<Velicinagrada> tipGradovaList = selectedVelicinaGradaSet.stream().collect(Collectors.toList());
-			this.gradService.findByVelicinaGradaIn(tipGradovaList);
+			gradovi.setItems(this.gradService.findByVelicinaGradaIn(tipGradovaList));
 		}
 		else if(selectedVelicinaGradaSet == null || selectedVelicinaGradaSet.isEmpty())
 		{
 			List<Organizacijskajedinica> tipZupanijeList = selectedZupanijeSet.stream().collect(Collectors.toList());
-			this.gradService.findByOrganizacijskaJedinicaIn(tipZupanijeList);
+			gradovi.setItems(this.gradService.findByOrganizacijskaJedinicaIn(tipZupanijeList));
 		}
 		else
 		{
 			List<Organizacijskajedinica> tipZupanijeList = selectedZupanijeSet.stream().collect(Collectors.toList());
 			List<Velicinagrada> tipGradovaList = selectedVelicinaGradaSet.stream().collect(Collectors.toList());
-			this.gradService.findByOrganizacijskaJedinicaInAndVelicinaGradaIn(tipZupanijeList, tipGradovaList);
+			gradovi.setItems(this.gradService.findByOrganizacijskaJedinicaInAndVelicinaGradaIn(tipZupanijeList, tipGradovaList));
 		}
 		
 		for(Grad grad : selectedGradSet)

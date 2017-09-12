@@ -13,6 +13,7 @@ import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.event.selection.SingleSelectionEvent;
 import com.vaadin.event.selection.SingleSelectionListener;
 import com.vaadin.navigator.View;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Button;
@@ -24,6 +25,7 @@ import com.vaadin.ui.RadioButtonGroup;
 import com.vaadin.ui.TextField;
 
 import models.Dogadjaj;
+import service.DogadjajService;
 import service.GradService;
 
 @SpringView(name="unosDogadjaj")
@@ -33,9 +35,11 @@ public class UnosDogadjaj extends FormLayout implements View {
 	String dateFormat = "dd.MM.yyyy HH:mm";
 	@Autowired
 	private GradService gradService;
+	@Autowired
+	private DogadjajService dogadjajService;
 	
 	@PostConstruct
-	protected void init(VaadinRequest request) {
+	protected void init() {
 		
 		Binder<Dogadjaj> binder = new Binder<>();
 		
@@ -92,6 +96,9 @@ public class UnosDogadjaj extends FormLayout implements View {
 	    		  event -> {
 	    		    try {
 	    		      binder.writeBean(dogadjaj);
+	    		      this.dogadjajService.save(dogadjaj);
+	    		      dogadjaj = new Dogadjaj();
+	    		      binder.readBean(dogadjaj);
 	    		    } catch (ValidationException e) {
 	    		      Notification.show("Događaj nije spremljen, " +
 	    		        "došlo je do greške.");
@@ -101,9 +108,15 @@ public class UnosDogadjaj extends FormLayout implements View {
 	    
 	    Button pretraziButton = new Button("Pretraži događaj");
 	    pretraziButton.addClickListener(clickEvent ->
-		    	this.getUI().getNavigator().navigateTo("unosDogadjaj"));
+		    	this.getUI().getNavigator().navigateTo("searchDogadjaj"));
 	    
 	    this.addComponent(pretraziButton);
+	    
 	}
+	
+	@Override
+    public void enter(ViewChangeEvent event) {
+		System.out.println("Unos Događaj");
+    }
 
 }
